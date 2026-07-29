@@ -4,11 +4,11 @@ import { addDays, formatDayHeader, formatRange, formatTime, isSameDay, startOfDa
 import { colorForKey } from '../lib/constants.js'
 import EventModal from './EventModal.jsx'
 
-const GRID_START_HOUR = 7
+const GRID_START_HOUR = 0
 const GRID_END_HOUR = 24
 const PX_PER_MIN = 1
 const TOTAL_MIN = (GRID_END_HOUR - GRID_START_HOUR) * 60
-const LABEL_HOURS = [8, 10, 12, 14, 16, 18, 20, 22]
+const LABEL_HOURS = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
 const SNAP_MIN = 15
 const DRAG_THRESHOLD_PX = 5
 
@@ -42,6 +42,8 @@ export default function WeekCalendar() {
   const [, forceTick] = useState(0)
 
   const dragRef = useRef(null)
+  const scrollRef = useRef(null)
+  const hasScrolledRef = useRef(false)
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i))
   const weekEnd = addDays(weekStart, 7)
 
@@ -69,6 +71,16 @@ export default function WeekCalendar() {
     const t = setInterval(() => forceTick((n) => n + 1), 60000)
     return () => clearInterval(t)
   }, [])
+
+  // Default scroll position: show a couple hours before "now" (or 7am if no
+  // current-time reference makes sense), while still allowing scroll up to 12am.
+  useEffect(() => {
+    if (hasScrolledRef.current || !scrollRef.current) return
+    const anchorMinutes = minutesFromMidnight(new Date()) - GRID_START_HOUR * 60
+    const target = anchorMinutes >= 0 && anchorMinutes <= TOTAL_MIN ? anchorMinutes : 7 * 60
+    scrollRef.current.scrollTop = Math.max(0, (target - 120) * PX_PER_MIN)
+    hasScrolledRef.current = true
+  }, [loading])
 
   const legendEntries = (() => {
     const seen = new Map()
@@ -260,7 +272,7 @@ export default function WeekCalendar() {
         {legendEntries.length === 0 && <span className="muted">No events this week</span>}
       </div>
 
-      <div className="week-grid-outer">
+      <div className="week-grid-outer" ref={scrollRef}>
         <div className="week-grid-headers">
           <div />
           {days.map((d, i) => (

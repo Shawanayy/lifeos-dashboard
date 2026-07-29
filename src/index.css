@@ -337,7 +337,7 @@ input:focus, select:focus { outline: 1px solid #e0607a; }
 }
 .day-column {
   position: relative; border-left: 1px solid rgba(236, 228, 216, 0.08);
-  background-image: repeating-linear-gradient(to bottom, rgba(236,228,216,0.03) 0, rgba(236,228,216,0.03) 1px, transparent 1px, transparent 60px);
+  background-image: repeating-linear-gradient(to bottom, rgba(236,228,216,0.09) 0, rgba(236,228,216,0.09) 1px, transparent 1px, transparent 60px);
 }
 .now-line { position: absolute; left: 0; right: 0; height: 2px; background: #e0607a; z-index: 2; }
 .now-line::before { content: ''; position: absolute; left: -3px; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: #e0607a; }
