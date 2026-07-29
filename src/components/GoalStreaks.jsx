@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase, USER_ID } from '../lib/supabase.js'
 import { toISODate, addDays } from '../lib/dateUtils.js'
 import { computeStreak, streakLabel } from '../lib/goalStreak.js'
-import { colorForKey, initialsFor } from '../lib/constants.js'
+import { initialsFor, HABIT_GRADIENTS } from '../lib/constants.js'
 
 const WEEKS_VISIBLE = 10
 
@@ -26,10 +26,11 @@ function buildWeeks(doneDates) {
   return weeks
 }
 
-function GoalCard({ goal, logs, onToggleToday }) {
+function GoalCard({ goal, logs, onToggleToday, index }) {
   const doneDates = new Set(logs.filter((l) => l.done).map((l) => l.date))
   const streak = computeStreak(doneDates)
-  const color = colorForKey(goal.id)
+  const { grad } = HABIT_GRADIENTS[index % HABIT_GRADIENTS.length]
+  const color = grad
   const weeks = buildWeeks(doneDates)
   const todayISO = toISODate(new Date())
   const doneToday = doneDates.has(todayISO)
@@ -159,10 +160,10 @@ export default function GoalStreaks() {
   if (goals.length === 0) return null
 
   return (
-    <div className="row row-wrap" style={{ alignItems: 'stretch' }}>
-      {goals.map((goal) => (
+    <div className="row row-wrap" style={{ alignItems: 'stretch', gap: 20 }}>
+      {goals.map((goal, index) => (
         <div key={goal.id} style={{ flex: '1 1 300px' }}>
-          <GoalCard goal={goal} logs={logsByGoal[goal.id] || []} onToggleToday={toggleToday} />
+          <GoalCard goal={goal} logs={logsByGoal[goal.id] || []} onToggleToday={toggleToday} index={index} />
         </div>
       ))}
     </div>

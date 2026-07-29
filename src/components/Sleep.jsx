@@ -48,7 +48,7 @@ export default function Sleep({ bare }) {
             <div className="progress-track">
               <div
                 className="progress-fill"
-                style={{ width: `${Math.round(pct * 100)}%`, background: '#5b9bd5' }}
+                style={{ width: `${Math.round(pct * 100)}%`, background: '#7fb494' }}
               />
             </div>
           </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase, USER_ID } from '../lib/supabase.js'
+import { gradeColor, gradeGradient } from '../lib/constants.js'
 
 export default function Grades() {
   const [classes, setClasses] = useState([])
@@ -52,13 +53,28 @@ export default function Grades() {
         <div className="grades-row">
           {classes.map((cls) => {
             const grade = grades[cls.id]
+            const pct = (grade && grade.percent) || 0
             return (
               <div className="grade-card" key={cls.id}>
-                <div>
-                  <div className="grade-class-name">{cls.name}</div>
-                  <div className="grade-class-code">{cls.code}</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div>
+                    <div className="grade-class-name">{cls.name}</div>
+                    <div className="grade-class-code">{cls.code}</div>
+                  </div>
+                  <div className="grade-value" style={{ color: gradeColor(pct) }}>
+                    {grade ? grade.current_grade : '—'}
+                  </div>
                 </div>
-                <div className="grade-value">{grade ? grade.current_grade : '—'}</div>
+                <div className="progress-track" style={{ height: 6, marginTop: 16 }}>
+                  <div
+                    className="progress-fill"
+                    style={{ width: `${pct}%`, background: gradeGradient(pct) }}
+                  />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 8 }}>
+                  <span style={{ fontSize: 11, color: '#8a7a7d' }}>—</span>
+                  <span style={{ fontSize: 12, color: '#b5868c' }}>{grade ? pct.toFixed(1) : ''}{grade ? '%' : ''}</span>
+                </div>
               </div>
             )
           })}

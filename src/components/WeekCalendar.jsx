@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { supabase, USER_ID } from '../lib/supabase.js'
-import { addDays, formatDayHeader, formatRange, formatTime, isSameDay, startOfDay } from '../lib/dateUtils.js'
+import { addDays, formatRange, formatTime, isSameDay, startOfDay } from '../lib/dateUtils.js'
 import { colorForKey } from '../lib/constants.js'
 import EventModal from './EventModal.jsx'
 
@@ -277,7 +277,8 @@ export default function WeekCalendar() {
           <div />
           {days.map((d, i) => (
             <div key={i} className={`week-day-header ${isSameDay(d, now) ? 'today' : ''}`}>
-              {formatDayHeader(d)}
+              <div className="week-day-name">{d.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase()}</div>
+              <div className="week-day-num">{d.getDate()}</div>
             </div>
           ))}
         </div>
@@ -300,7 +301,7 @@ export default function WeekCalendar() {
             return (
               <div
                 key={dayIndex}
-                className="day-column"
+                className={`day-column ${isSameDay(day, now) ? 'today' : ''}`}
                 data-day-index={dayIndex}
                 onClick={(e) => handleColumnClick(dayIndex, e)}
               >
@@ -327,7 +328,7 @@ export default function WeekCalendar() {
                     <div
                       key={ev.id}
                       className="event-block"
-                      style={{ top, height, background: color }}
+                      style={{ top, height, background: `${color}33`, borderLeft: `3px solid ${color}` }}
                       onPointerDown={(e) => handlePointerDownOnEvent(e, ev)}
                     >
                       <span className="ev-title">{ev.title}</span>

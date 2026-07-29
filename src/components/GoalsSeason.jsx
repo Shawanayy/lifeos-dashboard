@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase, USER_ID } from '../lib/supabase.js'
 import { toISODate, addDays } from '../lib/dateUtils.js'
 import { computeStreak, streakLabel } from '../lib/goalStreak.js'
-import { colorForKey } from '../lib/constants.js'
+import { GOAL_PROGRESS_GRADIENTS } from '../lib/constants.js'
 
 export default function GoalsSeason() {
   const [goals, setGoals] = useState([])
@@ -54,11 +54,11 @@ export default function GoalsSeason() {
 
       {!loading && goals.length > 0 && (
         <div className="goals-grid">
-          {goals.map((goal) => {
+          {goals.map((goal, index) => {
             const logs = logsByGoal[goal.id] || []
             const doneDates = new Set(logs.filter((l) => l.done).map((l) => l.date))
             const streak = computeStreak(doneDates)
-            const color = colorForKey(goal.title)
+            const color = GOAL_PROGRESS_GRADIENTS[index % GOAL_PROGRESS_GRADIENTS.length].grad
 
             let progress
             if (goal.target_value) {

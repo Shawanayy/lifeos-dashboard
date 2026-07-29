@@ -129,7 +129,7 @@ export default function Finances() {
                     <polyline
                       points={points}
                       fill="none"
-                      stroke={positive ? '#4caf82' : '#e0607a'}
+                      stroke={positive ? '#7fb494' : '#d98a96'}
                       strokeWidth="2"
                     />
                   </svg>

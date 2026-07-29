@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase, USER_ID } from '../lib/supabase.js'
 import { toISODate } from '../lib/dateUtils.js'
-import { NUTRITION_TARGETS } from '../lib/constants.js'
+import { NUTRITION_TARGETS, NUTRITION_COLORS } from '../lib/constants.js'
 
 export default function Nutrition() {
   const [totals, setTotals] = useState({ calories: 0, protein: 0, fat: 0, carbs: 0, sugar: 0 })
@@ -44,12 +44,18 @@ export default function Nutrition() {
           {Object.entries(NUTRITION_TARGETS).map(([key, meta]) => {
             const value = totals[key] || 0
             const pct = Math.min(1, value / meta.target)
+            const over = value > meta.target
+            const colors = NUTRITION_COLORS[key] || { base: '#d98a96', over: '#d98a96' }
             return (
               <div className="nutrition-bar-wrap" key={key}>
                 <div className="nutrition-bar-track">
                   <div
                     className="nutrition-bar-fill"
-                    style={{ height: `${Math.round(pct * 100)}%`, background: '#e0607a' }}
+                    style={{
+                      height: `${Math.round(pct * 100)}%`,
+                      background: over ? colors.over : colors.base,
+                      boxShadow: `0 0 8px ${(over ? colors.over : colors.base)}55`,
+                    }}
                   />
                 </div>
                 <div className="nutrition-bar-name">{meta.label}</div>

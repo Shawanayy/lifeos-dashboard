@@ -71,7 +71,7 @@ export default function Header() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 18 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span className="location-pin">&#128205;</span>
           <div className="tz-toggle">
@@ -93,7 +93,7 @@ export default function Header() {
 
           <div className="due-today">
             <div className="due-today-num">{dueToday}</div>
-            <div className="due-today-label">DUE TODAY</div>
+            <div className="due-today-label">due today</div>
           </div>
         </div>
       </div>

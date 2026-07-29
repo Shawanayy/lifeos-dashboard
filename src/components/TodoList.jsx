@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase, USER_ID } from '../lib/supabase.js'
-import { PRIORITY_COLORS, CATEGORY_OPTIONS } from '../lib/constants.js'
+import { PRIORITY_COLORS, CATEGORY_OPTIONS, CATEGORY_COLORS } from '../lib/constants.js'
 
 export default function TodoList() {
   const [todos, setTodos] = useState([])
@@ -77,7 +77,18 @@ export default function TodoList() {
           ))}
         </select>
         <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
-        <button type="submit" className="btn">Add</button>
+        <button
+          type="submit"
+          className="btn"
+          style={{
+            fontWeight: 600,
+            background: 'rgba(127,180,148,.18)',
+            border: '1px solid rgba(127,180,148,.35)',
+            color: '#8fc4a4',
+          }}
+        >
+          Add
+        </button>
       </form>
 
       {loading && <div className="empty-state">Loading tasks…</div>}
@@ -92,7 +103,23 @@ export default function TodoList() {
             />
             <input type="checkbox" checked={!!todo.completed} onChange={() => toggleCompleted(todo)} />
             <span className={`todo-title ${todo.completed ? 'done' : ''}`}>{todo.title}</span>
-            {todo.category && <span className="pill todo-cat-pill">{todo.category}</span>}
+            {todo.category && (
+              <span
+                className="todo-cat-pill"
+                style={{
+                  fontSize: 10,
+                  letterSpacing: '.5px',
+                  textTransform: 'uppercase',
+                  fontWeight: 600,
+                  borderRadius: 20,
+                  padding: '4px 10px',
+                  color: (CATEGORY_COLORS[todo.category] || {}).c || '#c9b8bb',
+                  background: (CATEGORY_COLORS[todo.category] || {}).bg || 'rgba(236, 228, 216, 0.06)',
+                }}
+              >
+                {todo.category}
+              </span>
+            )}
           </div>
         ))}
       </div>
