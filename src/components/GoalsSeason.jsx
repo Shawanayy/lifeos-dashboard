@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase, USER_ID } from '../lib/supabase.js'
 import { toISODate, addDays } from '../lib/dateUtils.js'
 import { computeStreak, streakLabel } from '../lib/goalStreak.js'
+import { colorForKey } from '../lib/constants.js'
 
 export default function GoalsSeason() {
   const [goals, setGoals] = useState([])
@@ -46,20 +47,18 @@ export default function GoalsSeason() {
 
   return (
     <div className="card">
-      <div className="section-header">
-        <h2 className="section-title">Goals This Season</h2>
-      </div>
-      <div className="section-sub">Pinned goals, tracked daily</div>
+      <div className="eyebrow-title">Goals This Season</div>
 
       {loading && <div className="empty-state">Loading goals…</div>}
       {!loading && goals.length === 0 && <div className="empty-state">No pinned goals yet.</div>}
 
       {!loading && goals.length > 0 && (
-        <div className="row row-wrap">
+        <div className="goals-grid">
           {goals.map((goal) => {
             const logs = logsByGoal[goal.id] || []
             const doneDates = new Set(logs.filter((l) => l.done).map((l) => l.date))
             const streak = computeStreak(doneDates)
+            const color = colorForKey(goal.title)
 
             let progress
             if (goal.target_value) {
@@ -72,12 +71,14 @@ export default function GoalsSeason() {
 
             return (
               <div key={goal.id} className="goal-card">
-                <div className="goal-card-title">{goal.title}</div>
-                <div className="goal-card-streak">{streakLabel(streak)}</div>
+                <div className="goal-card-head">
+                  <span className="goal-card-title">{goal.title}</span>
+                  <span className="goal-card-streak">{streakLabel(streak)}</span>
+                </div>
                 <div className="progress-track">
                   <div
                     className="progress-fill"
-                    style={{ width: `${Math.round(progress * 100)}%`, background: '#e0607a' }}
+                    style={{ width: `${Math.round(progress * 100)}%`, background: color }}
                   />
                 </div>
               </div>

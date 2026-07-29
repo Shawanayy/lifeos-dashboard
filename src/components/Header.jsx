@@ -72,6 +72,8 @@ export default function Header() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 18 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span className="location-pin">&#128205;</span>
           <div className="tz-toggle">
             <button
               className={`tz-pill ${mode === 'oregon' ? 'active' : ''}`}
@@ -86,6 +88,7 @@ export default function Header() {
               Hawai&apos;i
             </button>
             <span className="tz-pill readout">{abbrev || 'HST'}</span>
+          </div>
           </div>
 
           <div className="due-today">

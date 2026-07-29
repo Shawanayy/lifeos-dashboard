@@ -3,7 +3,7 @@ import { supabase, USER_ID } from '../lib/supabase.js'
 
 const SLEEP_GOAL_HOURS = 8
 
-export default function Sleep() {
+export default function Sleep({ bare }) {
   const [log, setLog] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -25,7 +25,7 @@ export default function Sleep() {
   const pct = Math.min(1, hours / SLEEP_GOAL_HOURS)
 
   return (
-    <div className="card">
+    <div className={bare ? '' : 'card'}>
       <div className="section-header">
         <h2 className="section-title">Sleep &amp; Recovery</h2>
         <span className="pill">{log ? (log.source || 'Watch') : 'Watch'}</span>

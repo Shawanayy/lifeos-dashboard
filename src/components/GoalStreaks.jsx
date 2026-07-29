@@ -70,7 +70,7 @@ function GoalCard({ goal, logs, onToggleToday }) {
 
       <div className="goal-detail-footer">
         <span className="muted">Feeds · {goal.title}</span>
-        <span className="toggle-text" style={{ color: doneToday ? '#4caf82' : '#9b8489' }} onClick={() => onToggleToday(goal.id)}>
+        <span className="toggle-text" style={{ color: doneToday ? '#4caf82' : '#8a7a7d' }} onClick={() => onToggleToday(goal.id)}>
           {doneToday ? 'Done today' : 'Not yet today'}
         </span>
       </div>

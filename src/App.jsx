@@ -22,20 +22,21 @@ export default function App() {
         <div style={{ flex: '2.5 1 0%', minWidth: 220 }} className="card">
           <Nutrition />
         </div>
-        <div style={{ flex: '3.5 1 0%', minWidth: 280 }} className="card">
+        <div style={{ flex: '3.5 1 0%', minWidth: 280 }} className="card" >
           <Workout />
+          <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid rgba(236, 228, 216, 0.08)' }}>
+            <Sleep bare />
+          </div>
         </div>
       </div>
-
-      <GoalStreaks />
 
       <WeekCalendar />
 
       <Finances />
 
-      <Grades />
+      <GoalStreaks />
 
-      <Sleep />
+      <Grades />
     </div>
   )
 }
