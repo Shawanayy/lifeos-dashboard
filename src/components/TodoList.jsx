@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { supabase, USER_ID } from '../lib/supabase.js'
 import { PRIORITY_COLORS, CATEGORY_OPTIONS, CATEGORY_COLORS } from '../lib/constants.js'
 
+const AUTO_DELETE_AFTER_DAYS = 3
+
 export default function TodoList() {
   const [todos, setTodos] = useState([])
   const [loading, setLoading] = useState(true)
@@ -9,8 +11,17 @@ export default function TodoList() {
   const [priority, setPriority] = useState('Medium')
   const [category, setCategory] = useState(CATEGORY_OPTIONS[0])
   const [dueDate, setDueDate] = useState('')
+  const [showDone, setShowDone] = useState(true)
 
   async function load() {
+    const cutoffISO = new Date(Date.now() - AUTO_DELETE_AFTER_DAYS * 24 * 60 * 60 * 1000).toISOString()
+    await supabase
+      .from('todos')
+      .delete()
+      .eq('user_id', USER_ID)
+      .eq('completed', true)
+      .lt('completed_at', cutoffISO)
+
     const { data } = await supabase
       .from('todos')
       .select('*')
@@ -43,8 +54,12 @@ export default function TodoList() {
   }
 
   async function toggleCompleted(todo) {
-    setTodos((prev) => prev.map((t) => (t.id === todo.id ? { ...t, completed: !t.completed } : t)))
-    await supabase.from('todos').update({ completed: !todo.completed }).eq('id', todo.id)
+    const nextCompleted = !todo.completed
+    const completedAt = nextCompleted ? new Date().toISOString() : null
+    setTodos((prev) =>
+      prev.map((t) => (t.id === todo.id ? { ...t, completed: nextCompleted, completed_at: completedAt } : t)),
+    )
+    await supabase.from('todos').update({ completed: nextCompleted, completed_at: completedAt }).eq('id', todo.id)
   }
 
   async function cyclePriority(todo) {
@@ -61,13 +76,20 @@ export default function TodoList() {
   }
 
   const completedCount = todos.filter((t) => t.completed).length
+  const visibleTodos = showDone ? todos : todos.filter((t) => !t.completed)
 
   return (
     <div>
       <div className="section-header">
         <h2 className="section-title">To-Do List</h2>
-        <span className="section-meta" style={{ fontStyle: 'normal', fontFamily: 'Archivo' }}>
+        <span
+          className="section-meta todo-done-toggle"
+          style={{ fontStyle: 'normal', fontFamily: 'Archivo', cursor: 'pointer' }}
+          onClick={() => setShowDone((s) => !s)}
+          title={showDone ? 'Hide completed tasks' : 'Show completed tasks'}
+        >
           {completedCount}/{todos.length} done
+          <span className="todo-done-caret">{showDone ? ' ▾' : ' ▸'}</span>
         </span>
       </div>
       <div className="section-sub">Colour = priority · tag = category</div>
@@ -106,9 +128,12 @@ export default function TodoList() {
 
       {loading && <div className="empty-state">Loading tasks…</div>}
       {!loading && todos.length === 0 && <div className="empty-state">No tasks yet.</div>}
+      {!loading && todos.length > 0 && visibleTodos.length === 0 && (
+        <div className="empty-state">All done — nice work.</div>
+      )}
 
       <div className="todo-list">
-        {todos.map((todo) => (
+        {visibleTodos.map((todo) => (
           <div className="todo-row" key={todo.id}>
             <div
               className="todo-priority-bar"
@@ -129,7 +154,9 @@ export default function TodoList() {
                 textTransform: 'uppercase',
                 fontWeight: 600,
                 borderRadius: 20,
-                padding: '4px 22px 4px 10px',
+                padding: '4px 14px',
+                textAlign: 'center',
+                textAlignLast: 'center',
                 color: (CATEGORY_COLORS[todo.category] || {}).c || '#c9b8bb',
                 background: (CATEGORY_COLORS[todo.category] || {}).bg || 'rgba(236, 228, 216, 0.06)',
                 border: 'none',

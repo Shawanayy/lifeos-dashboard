@@ -114,7 +114,7 @@ export default function Finances() {
       )}
 
       <div className="card" style={{ marginBottom: 22 }}>
-        <div className="section-title" style={{ fontSize: 16, marginBottom: 4 }}>Cash Accounts</div>
+        <div className="eyebrow-title">Cash Accounts</div>
         {accounts.length === 0 && <div className="empty-state">No accounts linked yet.</div>}
         <div className="accounts-list">
           {accounts.map((acct) => (
@@ -131,7 +131,7 @@ export default function Finances() {
 
       <div className="row" style={{ alignItems: 'stretch' }}>
         <div style={{ flex: '3 1 0%', minWidth: 280 }}>
-          <div className="section-title" style={{ fontSize: 16, marginBottom: 12 }}>My Positions</div>
+          <div className="eyebrow-title">My Positions</div>
           {holdings.length === 0 && <div className="empty-state">No positions yet.</div>}
           <div className="holdings-grid">
             {holdings.map((h) => {
@@ -190,7 +190,7 @@ export default function Finances() {
 
         <div style={{ flex: '2.5 1 0%', minWidth: 220 }}>
           <div className="section-header" style={{ marginBottom: 0 }}>
-            <div className="section-title" style={{ fontSize: 16 }}>Bills · {monthName()}</div>
+            <div className="eyebrow-title" style={{ marginBottom: 0 }}>Bills · {monthName()}</div>
             <span className="muted" style={{ fontSize: 13 }}>{paidCount}/{bills.length} paid</span>
           </div>
           {bills.length === 0 && <div className="empty-state">No bills tracked yet.</div>}

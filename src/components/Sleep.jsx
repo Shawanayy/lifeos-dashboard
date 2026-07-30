@@ -26,11 +26,15 @@ export default function Sleep({ bare }) {
 
   return (
     <div className={bare ? '' : 'card'}>
-      <div className="section-header">
-        <h2 className="section-title">Sleep &amp; Recovery</h2>
+      <div className="section-header" style={bare ? { marginBottom: 8 } : undefined}>
+        {bare ? (
+          <div className="eyebrow-title" style={{ margin: 0 }}>Sleep &amp; Recovery</div>
+        ) : (
+          <h2 className="section-title">Sleep &amp; Recovery</h2>
+        )}
         <span className="pill">{log ? (log.source || 'Watch') : 'Watch'}</span>
       </div>
-      <div className="section-sub">Last night vs. your 8-hour goal</div>
+      {!bare && <div className="section-sub">Last night vs. your 8-hour goal</div>}
 
       {loading && <div className="empty-state">Loading…</div>}
 

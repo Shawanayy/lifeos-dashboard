@@ -67,10 +67,6 @@ export default function Nutrition() {
           })}
         </div>
       )}
-
-      <div className="section-sub" style={{ marginTop: 'auto', paddingTop: 16, marginBottom: 0, fontFamily: 'Newsreader, serif', fontStyle: 'italic' }}>
-        Apple Watch data coming in Phase 4.
-      </div>
     </div>
   )
 }

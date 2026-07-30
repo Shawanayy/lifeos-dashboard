@@ -71,14 +71,27 @@ a { color: inherit; }
   margin: 0;
 }
 
-/* Small uppercase muted eyebrow-style label, e.g. "GOALS THIS SEASON" */
+/* Small uppercase muted eyebrow-style label, e.g. "GOALS THIS SEASON" —
+   the consistent sub-header treatment used for every second-tier heading
+   nested inside a card (as opposed to top-level card titles, which use
+   .section-title). */
 .eyebrow-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 2px;
+  font-weight: 500;
+  letter-spacing: 2.2px;
   text-transform: uppercase;
   color: #b5868c;
-  margin-bottom: 12px;
+  margin: 0 0 12px;
+}
+.eyebrow-title::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 12px;
+  height: 1px;
+  background: linear-gradient(90deg, #d98a96, rgba(217, 138, 150, 0));
 }
 
 .section-meta {
@@ -308,21 +321,24 @@ input:focus, select:focus { outline: 1px solid #d98a96; }
 .todo-row input[type="checkbox"] { align-self: center; flex: 0 0 auto; }
 .todo-legend { display: flex; gap: 16px; margin-top: 14px; font-size: 11px; color: #8a7a7d; }
 .legend-swatch { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; }
+.todo-done-toggle { display: inline-flex; align-items: center; transition: color .15s; }
+.todo-done-toggle:hover { color: #d98a96; }
+.todo-done-caret { display: inline-block; font-size: 9px; margin-left: 3px; opacity: .75; transform: translateY(-1px); }
 
 /* ---------- Nutrition ---------- */
 .nutrition-chart { display: flex; justify-content: space-between; align-items: flex-end; flex: 1 1 auto; min-height: 210px; gap: 12px; margin-top: 8px; }
 .nutrition-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
-.nutrition-bar-track { width: 10px; max-width: 10px; flex: 1 1 auto; min-height: 60px; background: rgba(236, 228, 216, 0.07); border: 1px solid rgba(236, 228, 216, 0.14); border-radius: 6px; display: flex; align-items: flex-end; overflow: hidden; }
+.nutrition-bar-track { width: 12px; max-width: 12px; flex: 1 1 auto; min-height: 60px; background: rgba(236, 228, 216, 0.07); border: 1px solid rgba(236, 228, 216, 0.14); border-radius: 6px; display: flex; align-items: flex-end; overflow: hidden; }
 .nutrition-bar-fill { width: 100%; border-radius: 7px; }
-.nutrition-bar-label { font-size: 8px; line-height: 1.4; color: #8a7a7d; text-align: center; white-space: nowrap; }
-.nutrition-bar-name { font-size: 9px; font-weight: 600; color: #ece4d8; margin-top: 10px; letter-spacing: 0.1px; white-space: nowrap; }
+.nutrition-bar-label { font-size: 11px; line-height: 1.4; color: #a4949a; text-align: center; white-space: nowrap; margin-top: 2px; }
+.nutrition-bar-name { font-family: 'Newsreader', serif; font-size: 15px; font-weight: 600; color: #ece4d8; margin-top: 12px; letter-spacing: 0.1px; white-space: nowrap; }
 
 /* ---------- Workout ---------- */
-.month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px; margin-top: 8px; }
+.month-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 34px)); justify-content: space-between; gap: 6px; margin-top: 10px; margin-bottom: 4px; }
 .month-cell {
   aspect-ratio: 1; border-radius: 5px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 10px; background: rgba(236, 228, 216, 0.04);
+  font-size: 11px; background: rgba(236, 228, 216, 0.04);
   border: none; cursor: pointer; color: #8a7a7d; font-weight: 400;
   transition: background .15s, color .15s;
 }

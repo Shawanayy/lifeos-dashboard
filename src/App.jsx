@@ -24,7 +24,7 @@ export default function App() {
         </div>
         <div style={{ flex: '3 1 0%', minWidth: 260, alignSelf: 'flex-start' }} className="card" >
           <Workout />
-          <div style={{ marginTop: 'auto', paddingTop: 14, borderTop: '1px solid rgba(236, 228, 216, 0.08)' }}>
+          <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid rgba(236, 228, 216, 0.08)' }}>
             <Sleep bare />
           </div>
         </div>
