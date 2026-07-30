@@ -41,7 +41,7 @@ a { color: inherit; }
 }
 
 .card {
-  background: linear-gradient(155deg, #1f1517, #150e0f);
+  background: linear-gradient(155deg, rgba(31, 21, 23, 0.86), rgba(21, 14, 15, 0.86));
   border: 1px solid rgba(236, 228, 216, 0.12);
   border-radius: 6px;
   padding: 24px 26px;
@@ -226,15 +226,17 @@ input:focus, select:focus { outline: 1px solid #d98a96; }
 
 /* ---------- Goals season ---------- */
 .goals-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 16px;
 }
 .goal-card {
-  background: linear-gradient(155deg, #1f1517, #150e0f);
+  background: linear-gradient(155deg, rgba(31, 21, 23, 0.86), rgba(21, 14, 15, 0.86));
   border: 1px solid rgba(236, 228, 216, 0.12);
   border-radius: 5px;
   padding: 15px 16px;
+  flex: 1 1 190px;
+  min-width: 190px;
 }
 .goal-card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .goal-card-title { font-weight: 400; font-size: 13px; flex: 1 1 0%; min-width: 0; color: #ece4d8; }
@@ -266,11 +268,19 @@ input:focus, select:focus { outline: 1px solid #d98a96; }
 }
 .goal-log-btn.done { border: none; color: #fff; }
 
-.heatmap { display: grid; grid-template-rows: repeat(7, 14px); grid-auto-flow: column; grid-auto-columns: 14px; gap: 4px; overflow-x: auto; padding-bottom: 4px; justify-content: start; }
+.goal-qty-row { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.goal-qty-input {
+  width: 56px; height: 32px; border-radius: 8px;
+  border: 1.5px solid rgba(236, 228, 216, 0.25); background: rgba(236, 228, 216, 0.05);
+  color: #ece4d8; font-size: 13px; text-align: center; padding: 0 6px;
+}
+.goal-qty-input::-webkit-outer-spin-button, .goal-qty-input::-webkit-inner-spin-button { margin: 0; }
+
+.heatmap { display: grid; grid-template-rows: repeat(7, 16px); grid-auto-flow: column; grid-auto-columns: 16px; gap: 5px; overflow-x: auto; padding-bottom: 4px; justify-content: start; }
 .heatmap-col { display: contents; }
 .heatmap-cell {
-  width: 14px; height: 14px; border-radius: 3px;
-  background: rgba(236, 228, 216, 0.06);
+  width: 16px; height: 16px; border-radius: 4px;
+  background: rgba(236, 228, 216, 0.08);
 }
 .heatmap-cell.today { box-shadow: none; border: 1px solid #ece4d8; }
 
@@ -300,9 +310,9 @@ input:focus, select:focus { outline: 1px solid #d98a96; }
 .legend-swatch { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; }
 
 /* ---------- Nutrition ---------- */
-.nutrition-chart { display: flex; justify-content: space-between; align-items: flex-end; height: 150px; gap: 10px; margin-top: 8px; }
+.nutrition-chart { display: flex; justify-content: space-between; align-items: flex-end; height: 210px; gap: 12px; margin-top: 8px; }
 .nutrition-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
-.nutrition-bar-track { width: 14px; max-width: 14px; height: 110px; background: rgba(236, 228, 216, 0.07); border: 1px solid rgba(236, 228, 216, 0.14); border-radius: 7px; display: flex; align-items: flex-end; overflow: hidden; }
+.nutrition-bar-track { width: 10px; max-width: 10px; height: 170px; background: rgba(236, 228, 216, 0.07); border: 1px solid rgba(236, 228, 216, 0.14); border-radius: 6px; display: flex; align-items: flex-end; overflow: hidden; }
 .nutrition-bar-fill { width: 100%; border-radius: 7px; }
 .nutrition-bar-label { font-size: 8px; line-height: 1.4; color: #8a7a7d; text-align: center; white-space: nowrap; }
 .nutrition-bar-name { font-size: 9px; font-weight: 600; color: #ece4d8; margin-top: 10px; letter-spacing: 0.1px; white-space: nowrap; }
@@ -389,7 +399,7 @@ input:focus, select:focus { outline: 1px solid #d98a96; }
 
 /* ---------- Finances ---------- */
 .stat-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 20px; }
-.stat-card { background: linear-gradient(155deg, #1f1517, #150e0f); border: 1px solid rgba(236, 228, 216, 0.12); border-radius: 6px; padding: 16px 18px; }
+.stat-card { background: linear-gradient(155deg, rgba(31, 21, 23, 0.86), rgba(21, 14, 15, 0.86)); border: 1px solid rgba(236, 228, 216, 0.12); border-radius: 6px; padding: 16px 18px; }
 .stat-label { font-size: 9px; letter-spacing: 1.5px; color: #b5868c; text-transform: uppercase; margin-bottom: 10px; }
 .stat-value { font-family: 'Newsreader', serif; font-size: 24px; font-weight: 500; letter-spacing: -0.3px; color: #ece4d8; }
 
@@ -414,7 +424,7 @@ input:focus, select:focus { outline: 1px solid #d98a96; }
 .empty-state { color: #6f5f62; font-size: 13px; font-style: italic; padding: 20px 0; text-align: center; }
 
 .grades-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-.grade-card { background: linear-gradient(155deg, #1f1517, #150e0f); border: 1px solid rgba(236, 228, 216, 0.12); border-radius: 6px; padding: 18px; min-height: 100px; display: flex; flex-direction: column; justify-content: space-between; }
+.grade-card { background: linear-gradient(155deg, rgba(31, 21, 23, 0.86), rgba(21, 14, 15, 0.86)); border: 1px solid rgba(236, 228, 216, 0.12); border-radius: 6px; padding: 18px; min-height: 100px; display: flex; flex-direction: column; justify-content: space-between; }
 .grade-class-name { font-weight: 700; font-size: 13px; color: #ece4d8; }
 .grade-class-code { font-size: 11px; color: #8a7a7d; margin-top: 2px; }
 .grade-value { font-family: 'Newsreader', serif; font-size: 22px; font-weight: 600; }

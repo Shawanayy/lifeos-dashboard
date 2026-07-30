@@ -26,14 +26,25 @@ function buildWeeks(doneDates) {
   return weeks
 }
 
-function GoalCard({ goal, logs, onToggleToday, index }) {
+function GoalCard({ goal, logs, onToggleToday, onLogQuantity, index }) {
+  const [qty, setQty] = useState('')
   const doneDates = new Set(logs.filter((l) => l.done).map((l) => l.date))
   const streak = computeStreak(doneDates)
-  const { grad } = HABIT_GRADIENTS[index % HABIT_GRADIENTS.length]
+  const { grad, hue } = HABIT_GRADIENTS[index % HABIT_GRADIENTS.length]
   const color = grad
   const weeks = buildWeeks(doneDates)
   const todayISO = toISODate(new Date())
   const doneToday = doneDates.has(todayISO)
+  const isQuantity = goal.target_value != null && goal.target_value !== ''
+  const todayLog = logs.find((l) => l.date === todayISO)
+  const todayValue = todayLog?.value || 0
+
+  function submitQty() {
+    const amount = parseFloat(qty)
+    if (!amount) return
+    onLogQuantity(goal.id, amount)
+    setQty('')
+  }
 
   return (
     <div className="card goal-detail-card">
@@ -45,13 +56,30 @@ function GoalCard({ goal, logs, onToggleToday, index }) {
           <div className="goal-detail-title">{goal.title}</div>
           <div className="goal-detail-streak">{streakLabel(streak)}</div>
         </div>
-        <button
-          className={`goal-log-btn ${doneToday ? 'done' : ''}`}
-          onClick={() => onToggleToday(goal.id)}
-          title="Log today"
-        >
-          +
-        </button>
+        {isQuantity ? (
+          <div className="goal-qty-row">
+            <input
+              type="number"
+              inputMode="decimal"
+              placeholder={goal.unit || 'qty'}
+              value={qty}
+              onChange={(e) => setQty(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && submitQty()}
+              className="goal-qty-input"
+            />
+            <button className="goal-log-btn" onClick={submitQty} title="Log amount">
+              +
+            </button>
+          </div>
+        ) : (
+          <button
+            className={`goal-log-btn ${doneToday ? 'done' : ''}`}
+            onClick={() => onToggleToday(goal.id)}
+            title="Log today"
+          >
+            +
+          </button>
+        )}
       </div>
 
       <div className="heatmap">
@@ -61,7 +89,10 @@ function GoalCard({ goal, logs, onToggleToday, index }) {
               <div
                 key={day.iso}
                 className={`heatmap-cell ${day.isToday ? 'today' : ''}`}
-                style={{ background: day.done ? color : undefined }}
+                style={{
+                  background: day.done ? color : undefined,
+                  boxShadow: day.done ? `0 0 6px ${hue}66` : undefined,
+                }}
                 title={day.iso}
               />
             ))}
@@ -71,9 +102,15 @@ function GoalCard({ goal, logs, onToggleToday, index }) {
 
       <div className="goal-detail-footer">
         <span className="muted">Feeds · {goal.title}</span>
-        <span className="toggle-text" style={{ color: doneToday ? '#4caf82' : '#8a7a7d' }} onClick={() => onToggleToday(goal.id)}>
-          {doneToday ? 'Done today' : 'Not yet today'}
-        </span>
+        {isQuantity ? (
+          <span className="toggle-text" style={{ color: todayValue > 0 ? '#4caf82' : '#8a7a7d' }}>
+            {todayValue > 0 ? `${todayValue}${goal.unit || ''} logged today` : 'Nothing logged today'}
+          </span>
+        ) : (
+          <span className="toggle-text" style={{ color: doneToday ? '#4caf82' : '#8a7a7d' }} onClick={() => onToggleToday(goal.id)}>
+            {doneToday ? 'Done today' : 'Not yet today'}
+          </span>
+        )}
       </div>
     </div>
   )
@@ -89,7 +126,7 @@ export default function GoalStreaks() {
     const cutoffISO = toISODate(addDays(new Date(), -(WEEKS_VISIBLE * 7 + 2)))
     const { data } = await supabase
       .from('goal_logs')
-      .select('goal_id, date, done')
+      .select('goal_id, date, done, value')
       .in('goal_id', ids)
       .gte('date', cutoffISO)
     const grouped = {}
@@ -156,6 +193,38 @@ export default function GoalStreaks() {
     }
   }
 
+  async function logQuantity(goalId, amount) {
+    const todayISO = toISODate(new Date())
+    const existing = (logsByGoal[goalId] || []).find((l) => l.date === todayISO)
+    const newValue = (existing?.value || 0) + amount
+
+    // optimistic update
+    setLogsByGoal((prev) => {
+      const next = { ...prev }
+      const list = [...(next[goalId] || [])]
+      const idx = list.findIndex((l) => l.date === todayISO)
+      if (idx >= 0) {
+        list[idx] = { ...list[idx], value: newValue, done: true }
+      } else {
+        list.push({ goal_id: goalId, date: todayISO, done: true, value: newValue })
+      }
+      next[goalId] = list
+      return next
+    })
+
+    await supabase.from('goal_logs').upsert(
+      { goal_id: goalId, date: todayISO, done: true, value: newValue },
+      { onConflict: 'goal_id,date' },
+    )
+
+    const goal = goals.find((g) => g.id === goalId)
+    if (goal) {
+      const newCurrent = (parseFloat(goal.current_value) || 0) + amount
+      setGoals((prev) => prev.map((g) => (g.id === goalId ? { ...g, current_value: newCurrent } : g)))
+      await supabase.from('goals').update({ current_value: newCurrent }).eq('id', goalId)
+    }
+  }
+
   if (loading) return null
   if (goals.length === 0) return null
 
@@ -163,7 +232,13 @@ export default function GoalStreaks() {
     <div className="row row-wrap" style={{ alignItems: 'stretch', gap: 20 }}>
       {goals.map((goal, index) => (
         <div key={goal.id} style={{ flex: '1 1 300px' }}>
-          <GoalCard goal={goal} logs={logsByGoal[goal.id] || []} onToggleToday={toggleToday} index={index} />
+          <GoalCard
+            goal={goal}
+            logs={logsByGoal[goal.id] || []}
+            onToggleToday={toggleToday}
+            onLogQuantity={logQuantity}
+            index={index}
+          />
         </div>
       ))}
     </div>

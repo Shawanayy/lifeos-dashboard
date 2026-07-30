@@ -16,13 +16,13 @@ export default function App() {
       <GoalsSeason />
 
       <div className="row" style={{ alignItems: 'stretch' }}>
-        <div style={{ flex: '4 1 0%', minWidth: 320 }} className="card">
+        <div style={{ flex: '5 1 0%', minWidth: 340 }} className="card">
           <TodoList />
         </div>
-        <div style={{ flex: '2.5 1 0%', minWidth: 220 }} className="card">
+        <div style={{ flex: '2 1 0%', minWidth: 200 }} className="card">
           <Nutrition />
         </div>
-        <div style={{ flex: '3.5 1 0%', minWidth: 280 }} className="card" >
+        <div style={{ flex: '3 1 0%', minWidth: 260 }} className="card" >
           <Workout />
           <div style={{ marginTop: 'auto', paddingTop: 14, borderTop: '1px solid rgba(236, 228, 216, 0.08)' }}>
             <Sleep bare />

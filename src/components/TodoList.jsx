@@ -47,6 +47,19 @@ export default function TodoList() {
     await supabase.from('todos').update({ completed: !todo.completed }).eq('id', todo.id)
   }
 
+  async function cyclePriority(todo) {
+    const order = ['Low', 'Medium', 'High']
+    const idx = order.indexOf(todo.priority)
+    const next = order[(idx + 1) % order.length] || 'Medium'
+    setTodos((prev) => prev.map((t) => (t.id === todo.id ? { ...t, priority: next } : t)))
+    await supabase.from('todos').update({ priority: next }).eq('id', todo.id)
+  }
+
+  async function updateCategory(todo, newCategory) {
+    setTodos((prev) => prev.map((t) => (t.id === todo.id ? { ...t, category: newCategory } : t)))
+    await supabase.from('todos').update({ category: newCategory }).eq('id', todo.id)
+  }
+
   const completedCount = todos.filter((t) => t.completed).length
 
   return (
@@ -99,27 +112,38 @@ export default function TodoList() {
           <div className="todo-row" key={todo.id}>
             <div
               className="todo-priority-bar"
-              style={{ background: PRIORITY_COLORS[todo.priority] || PRIORITY_COLORS.Medium }}
+              style={{ background: PRIORITY_COLORS[todo.priority] || PRIORITY_COLORS.Medium, cursor: 'pointer' }}
+              title={`Priority: ${todo.priority || 'Medium'} (click to change)`}
+              onClick={() => cyclePriority(todo)}
             />
             <input type="checkbox" checked={!!todo.completed} onChange={() => toggleCompleted(todo)} />
             <span className={`todo-title ${todo.completed ? 'done' : ''}`}>{todo.title}</span>
-            {todo.category && (
-              <span
-                className="todo-cat-pill"
-                style={{
-                  fontSize: 10,
-                  letterSpacing: '.5px',
-                  textTransform: 'uppercase',
-                  fontWeight: 600,
-                  borderRadius: 20,
-                  padding: '4px 10px',
-                  color: (CATEGORY_COLORS[todo.category] || {}).c || '#c9b8bb',
-                  background: (CATEGORY_COLORS[todo.category] || {}).bg || 'rgba(236, 228, 216, 0.06)',
-                }}
-              >
-                {todo.category}
-              </span>
-            )}
+            <select
+              className="todo-cat-pill"
+              value={todo.category || CATEGORY_OPTIONS[0]}
+              onChange={(e) => updateCategory(todo, e.target.value)}
+              title="Category (click to change)"
+              style={{
+                fontSize: 10,
+                letterSpacing: '.5px',
+                textTransform: 'uppercase',
+                fontWeight: 600,
+                borderRadius: 20,
+                padding: '4px 22px 4px 10px',
+                color: (CATEGORY_COLORS[todo.category] || {}).c || '#c9b8bb',
+                background: (CATEGORY_COLORS[todo.category] || {}).bg || 'rgba(236, 228, 216, 0.06)',
+                border: 'none',
+                cursor: 'pointer',
+                appearance: 'none',
+                WebkitAppearance: 'none',
+              }}
+            >
+              {CATEGORY_OPTIONS.map((c) => (
+                <option key={c} value={c} style={{ color: '#1a1213', background: '#ece4d8' }}>
+                  {c}
+                </option>
+              ))}
+            </select>
           </div>
         ))}
       </div>
