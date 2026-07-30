@@ -310,9 +310,9 @@ input:focus, select:focus { outline: 1px solid #d98a96; }
 .legend-swatch { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; }
 
 /* ---------- Nutrition ---------- */
-.nutrition-chart { display: flex; justify-content: space-between; align-items: flex-end; height: 210px; gap: 12px; margin-top: 8px; }
+.nutrition-chart { display: flex; justify-content: space-between; align-items: flex-end; flex: 1 1 auto; min-height: 210px; gap: 12px; margin-top: 8px; }
 .nutrition-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
-.nutrition-bar-track { width: 10px; max-width: 10px; height: 170px; background: rgba(236, 228, 216, 0.07); border: 1px solid rgba(236, 228, 216, 0.14); border-radius: 6px; display: flex; align-items: flex-end; overflow: hidden; }
+.nutrition-bar-track { width: 10px; max-width: 10px; flex: 1 1 auto; min-height: 60px; background: rgba(236, 228, 216, 0.07); border: 1px solid rgba(236, 228, 216, 0.14); border-radius: 6px; display: flex; align-items: flex-end; overflow: hidden; }
 .nutrition-bar-fill { width: 100%; border-radius: 7px; }
 .nutrition-bar-label { font-size: 8px; line-height: 1.4; color: #8a7a7d; text-align: center; white-space: nowrap; }
 .nutrition-bar-name { font-size: 9px; font-weight: 600; color: #ece4d8; margin-top: 10px; letter-spacing: 0.1px; white-space: nowrap; }
@@ -410,11 +410,20 @@ input:focus, select:focus { outline: 1px solid #d98a96; }
 .account-type { font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; color: #8a7a7d; margin-left: 8px; }
 .account-balance { font-family: 'Newsreader', serif; font-weight: 400; font-size: 18px; color: #ece4d8; }
 
-.holdings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
-.holding-card { background: rgba(236, 228, 216, 0.04); border: 1px solid rgba(236, 228, 216, 0.1); border-radius: 5px; padding: 11px; }
-.holding-ticker { font-weight: 700; font-size: 13px; margin-bottom: 6px; color: #ece4d8; }
-.holding-value { font-family: 'Newsreader', serif; font-size: 18px; margin-top: 6px; color: #ece4d8; }
-.holding-gain { font-size: 12px; font-weight: 600; }
+.holdings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 10px; max-height: 280px; overflow-y: auto; padding-right: 2px; }
+.holding-card { background: rgba(236, 228, 216, 0.04); border: 1px solid rgba(236, 228, 216, 0.1); border-radius: 5px; padding: 9px; }
+.holding-ticker { font-weight: 700; font-size: 12px; margin-bottom: 4px; color: #ece4d8; }
+.holding-value { font-family: 'Newsreader', serif; font-size: 15px; margin-top: 4px; color: #ece4d8; }
+.holding-gain { font-size: 11px; font-weight: 600; }
+
+.savings-goal-row { margin-bottom: 13px; }
+.savings-goal-head { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; color: #ece4d8; }
+.savings-goal-amounts { color: #8a7a7d; }
+.savings-goal-track { height: 6px; background: #2e2022; border-radius: 4px; overflow: hidden; }
+.savings-goal-fill { height: 6px; border-radius: 4px; transition: width .4s ease; }
+.savings-spent-block { border-top: 1px solid rgba(236, 228, 216, 0.1); margin-top: 16px; padding-top: 14px; }
+.savings-spent-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #b5868c; }
+.savings-spent-value { font-family: 'Newsreader', serif; font-size: 24px; margin-top: 6px; color: #ece4d8; }
 
 .bills-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
 .bill-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #ece4d8; }

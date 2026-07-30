@@ -22,7 +22,7 @@ export default function App() {
         <div style={{ flex: '2 1 0%', minWidth: 200 }} className="card">
           <Nutrition />
         </div>
-        <div style={{ flex: '3 1 0%', minWidth: 260 }} className="card" >
+        <div style={{ flex: '3 1 0%', minWidth: 260, alignSelf: 'flex-start' }} className="card" >
           <Workout />
           <div style={{ marginTop: 'auto', paddingTop: 14, borderTop: '1px solid rgba(236, 228, 216, 0.08)' }}>
             <Sleep bare />

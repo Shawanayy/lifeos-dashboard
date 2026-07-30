@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase, USER_ID } from '../lib/supabase.js'
 import { monthName } from '../lib/dateUtils.js'
 import { formatCurrency, formatSignedCurrency, formatPercent } from '../lib/format.js'
+import { GOAL_PROGRESS_GRADIENTS } from '../lib/constants.js'
 
 function seededRandom(seed) {
   let h = 0
@@ -42,21 +43,35 @@ export default function Finances() {
   const [holdings, setHoldings] = useState([])
   const [bills, setBills] = useState([])
   const [accounts, setAccounts] = useState([])
+  const [savingsGoals, setSavingsGoals] = useState([])
+  const [spentThisMonth, setSpentThisMonth] = useState(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function load() {
-      const [{ data: summaryData }, { data: holdingsData }, { data: billsData }, { data: accountsData }] =
-        await Promise.all([
-          supabase.from('portfolio_summary').select('*').eq('user_id', USER_ID).maybeSingle(),
-          supabase.from('holdings').select('*').eq('user_id', USER_ID),
-          supabase.from('bills').select('*').eq('user_id', USER_ID).order('due_day', { ascending: true }),
-          supabase.from('accounts').select('*').eq('user_id', USER_ID).order('balance', { ascending: false }),
-        ])
+      const now = new Date()
+      const firstOfMonthISO = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10)
+      const [
+        { data: summaryData },
+        { data: holdingsData },
+        { data: billsData },
+        { data: accountsData },
+        { data: savingsData },
+        { data: expenseData },
+      ] = await Promise.all([
+        supabase.from('portfolio_summary').select('*').eq('user_id', USER_ID).maybeSingle(),
+        supabase.from('holdings').select('*').eq('user_id', USER_ID),
+        supabase.from('bills').select('*').eq('user_id', USER_ID).order('due_day', { ascending: true }),
+        supabase.from('accounts').select('*').eq('user_id', USER_ID).order('balance', { ascending: false }),
+        supabase.from('goals').select('*').eq('user_id', USER_ID).eq('goal_type', 'Savings'),
+        supabase.from('finances').select('amount').eq('user_id', USER_ID).eq('type', 'Expense').gte('date', firstOfMonthISO),
+      ])
       setSummary(summaryData || null)
       setHoldings(holdingsData || [])
       setBills(billsData || [])
       setAccounts(accountsData || [])
+      setSavingsGoals(savingsData || [])
+      setSpentThisMonth((expenseData || []).reduce((sum, row) => sum + (Number(row.amount) || 0), 0))
       setLoading(false)
     }
     load()
@@ -115,7 +130,7 @@ export default function Finances() {
       </div>
 
       <div className="row" style={{ alignItems: 'stretch' }}>
-        <div style={{ flex: '4 1 0%', minWidth: 320 }}>
+        <div style={{ flex: '3 1 0%', minWidth: 280 }}>
           <div className="section-title" style={{ fontSize: 16, marginBottom: 12 }}>My Positions</div>
           {holdings.length === 0 && <div className="empty-state">No positions yet.</div>}
           <div className="holdings-grid">
@@ -143,9 +158,34 @@ export default function Finances() {
           </div>
         </div>
 
-        <div style={{ flex: '2.5 1 0%', minWidth: 220 }}>
-          <div className="section-title" style={{ fontSize: 16, marginBottom: 12 }}>Savings Goals</div>
-          <div className="empty-state">No savings goals seeded yet.</div>
+        <div style={{ flex: '3 1 0%', minWidth: 240 }}>
+          <div className="eyebrow-title">Savings goals</div>
+          {savingsGoals.length === 0 && <div className="empty-state">No savings goals seeded yet.</div>}
+          {savingsGoals.map((g) => {
+            const target = Number(g.target_value) || 0
+            const current = Number(g.current_value) || 0
+            const pct = target > 0 ? Math.min(100, (current / target) * 100) : 0
+            return (
+              <div className="savings-goal-row" key={g.id}>
+                <div className="savings-goal-head">
+                  <span>{g.title}</span>
+                  <span className="savings-goal-amounts">
+                    {formatCurrency(current)} / {formatCurrency(target)}
+                  </span>
+                </div>
+                <div className="savings-goal-track">
+                  <div
+                    className="savings-goal-fill"
+                    style={{ width: `${pct}%`, background: GOAL_PROGRESS_GRADIENTS[0].grad }}
+                  />
+                </div>
+              </div>
+            )
+          })}
+          <div className="savings-spent-block">
+            <div className="savings-spent-label">Spent · {monthName()}</div>
+            <div className="savings-spent-value">{formatCurrency(spentThisMonth)}</div>
+          </div>
         </div>
 
         <div style={{ flex: '2.5 1 0%', minWidth: 220 }}>

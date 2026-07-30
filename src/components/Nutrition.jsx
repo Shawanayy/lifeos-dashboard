@@ -31,7 +31,7 @@ export default function Nutrition() {
   }, [])
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div className="section-header">
         <h2 className="section-title">Nutrition</h2>
       </div>
@@ -68,7 +68,7 @@ export default function Nutrition() {
         </div>
       )}
 
-      <div className="section-sub" style={{ marginTop: 16, marginBottom: 0, fontFamily: 'Newsreader, serif', fontStyle: 'italic' }}>
+      <div className="section-sub" style={{ marginTop: 'auto', paddingTop: 16, marginBottom: 0, fontFamily: 'Newsreader, serif', fontStyle: 'italic' }}>
         Apple Watch data coming in Phase 4.
       </div>
     </div>
