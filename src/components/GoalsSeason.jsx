@@ -46,8 +46,8 @@ export default function GoalsSeason() {
   }, [])
 
   return (
-    <div className="card">
-      <div className="eyebrow-title">Goals This Season</div>
+    <div className="goals-season">
+      <div className="eyebrow" style={{ marginBottom: 12 }}>Goals This Season</div>
 
       {loading && <div className="empty-state">Loading goals…</div>}
       {!loading && goals.length === 0 && <div className="empty-state">No pinned goals yet.</div>}
@@ -89,3 +89,4 @@ export default function GoalsSeason() {
     </div>
   )
 }
+

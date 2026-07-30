@@ -46,15 +46,16 @@ export default function Nutrition() {
             const pct = Math.min(1, value / meta.target)
             const over = value > meta.target
             const colors = NUTRITION_COLORS[key] || { base: '#d98a96', over: '#d98a96' }
+            const pctInt = Math.round(pct * 100)
             return (
               <div className="nutrition-bar-wrap" key={key}>
+                <div className="nutrition-bar-percent">{pctInt}%</div>
                 <div className="nutrition-bar-track">
                   <div
                     className="nutrition-bar-fill"
                     style={{
-                      height: `${Math.round(pct * 100)}%`,
+                      height: `${pctInt}%`,
                       background: over ? colors.over : colors.base,
-                      boxShadow: `0 0 8px ${(over ? colors.over : colors.base)}55`,
                     }}
                   />
                 </div>

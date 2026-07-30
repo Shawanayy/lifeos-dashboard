@@ -255,7 +255,7 @@ export default function WeekCalendar() {
     <div className="card">
       <div className="section-header">
         <div className="week-nav">
-          <h2 className="section-title">Next 7 Days</h2>
+          <h2 className="section-title">This Week</h2>
           <button onClick={() => setWeekStart((d) => addDays(d, -7))} aria-label="Previous week">‹</button>
           <button onClick={() => setWeekStart((d) => addDays(d, 7))} aria-label="Next week">›</button>
         </div>

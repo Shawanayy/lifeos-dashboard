@@ -46,12 +46,37 @@ export const HABIT_GRADIENTS = [
 // Extracted verbatim from original bundle's `S0` array — per-macro colors used
 // for the Nutrition bars (base = normal, over = over-target). Target thresholds
 // themselves are left untouched (functional data, not style).
+// Re-themed to the warm dusk palette (see design-reference.html ~411-425).
+// Each macro provides a `base` and `over` gradient (used as `background`
+// on the vertical bar fill). Values chosen from the palette family:
+//   golds  #9c6f23 / #e6c074 / #c79a3f
+//   reds   #7c2330 / #e29aa6 / #d98a96 / #b3243a
+//   greens #3f6b52 / #5c8a72 / #8fc4a4 / #7fb494
+//   blue-grays #4a6a8c / #6f8fb0 / #9db8e0
+// The 3 gradients from the mockup are reused (Calories=gold, Protein=red,
+// Sugar=green), then Fat and Carbs get two new complementary gradients so
+// all 5 bars are visually distinct.
 export const NUTRITION_COLORS = {
-  calories: { base: '#F59E0B', over: '#FCD34D' },
-  protein: { base: '#22C55E', over: '#4ADE80' },
-  fat: { base: '#A855F7', over: '#C084FC' },
-  carbs: { base: '#3B82F6', over: '#60A5FA' },
-  sugar: { base: '#EF4444', over: '#F87171' },
+  calories: {
+    base: 'linear-gradient(0deg,#9c6f23,#e6c074)',
+    over: 'linear-gradient(0deg,#c79a3f,#e6c074)',
+  },
+  protein: {
+    base: 'linear-gradient(0deg,#7c2330,#e29aa6)',
+    over: 'linear-gradient(0deg,#b3243a,#e29aa6)',
+  },
+  fat: {
+    base: 'linear-gradient(0deg,#4a6a8c,#9db8e0)',
+    over: 'linear-gradient(0deg,#6f8fb0,#9db8e0)',
+  },
+  carbs: {
+    base: 'linear-gradient(0deg,#8c4a2a,#f0a07a)',
+    over: 'linear-gradient(0deg,#c79a3f,#f0a07a)',
+  },
+  sugar: {
+    base: 'linear-gradient(0deg,#3f6b52,#8fc4a4)',
+    over: 'linear-gradient(0deg,#5c8a72,#8fc4a4)',
+  },
 }
 
 // Extracted verbatim from original bundle's `rw`/`nw` functions — grade-percent
@@ -78,8 +103,7 @@ export function gradeGradient(pct) {
 // a visual-design token, so it is left untouched here (no generic fallback
 // palette could be recovered as evidence).
 export const PALETTE = [
-  '#e0607a', '#4caf82', '#5b9bd5', '#d9a441',
-  '#b57edc', '#4cb8b0', '#e08a3c', '#c76b6b',
+  '#7c2330', '#d98a96', '#6f8fb0', '#c79a3f', '#5c8a72',
 ]
 
 // Small rotating set of quotes, keyed off day-of-year so it's stable per day.

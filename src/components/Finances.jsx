@@ -27,6 +27,17 @@ function sparklinePoints(ticker, positive) {
   return pts.join(' ')
 }
 
+// Build a closed area path (line points + closing edge along the bottom) for
+// filled sparkline area rendering. Uses viewBox 0 0 100 60 (matches polyline).
+function sparklineAreaPath(pointsStr) {
+  const pts = pointsStr.trim().split(/\s+/)
+  if (pts.length === 0) return ''
+  const first = pts[0].split(',')
+  const last = pts[pts.length - 1].split(',')
+  const lineSegs = pts.map((p, i) => (i === 0 ? `M${p}` : `L${p}`)).join(' ')
+  return `${lineSegs} L${last[0]},60 L${first[0]},60 Z`
+}
+
 function StatCard({ label, value, colorBySign }) {
   const n = Number(value)
   const cls = colorBySign ? (n >= 0 ? 'positive' : 'negative') : ''
@@ -134,18 +145,42 @@ export default function Finances() {
           <div className="eyebrow-title">My Positions</div>
           {holdings.length === 0 && <div className="empty-state">No positions yet.</div>}
           <div className="holdings-grid">
+            <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true">
+              <defs>
+                <linearGradient id="sgUp" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#7fb494" stopOpacity="0.5" />
+                  <stop offset="100%" stopColor="#7fb494" stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="sgDown" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#d98a96" stopOpacity="0.42" />
+                  <stop offset="100%" stopColor="#d98a96" stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="strokeUp" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#5c8a72" />
+                  <stop offset="100%" stopColor="#7fb494" />
+                </linearGradient>
+                <linearGradient id="strokeDown" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#7c2330" />
+                  <stop offset="100%" stopColor="#d98a96" />
+                </linearGradient>
+              </defs>
+            </svg>
             {holdings.map((h) => {
               const positive = Number(h.pct_return) >= 0
               const points = sparklinePoints(h.ticker + h.id, positive)
+              const areaPath = sparklineAreaPath(points)
               return (
                 <div className="holding-card" key={h.id}>
                   <div className="holding-ticker">{h.ticker}</div>
                   <svg viewBox="0 0 100 60" width="100%" height="40" preserveAspectRatio="none">
+                    <path d={areaPath} fill={positive ? 'url(#sgUp)' : 'url(#sgDown)'} />
                     <polyline
                       points={points}
                       fill="none"
-                      stroke={positive ? '#7fb494' : '#d98a96'}
+                      stroke={positive ? 'url(#strokeUp)' : 'url(#strokeDown)'}
                       strokeWidth="2"
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
                     />
                   </svg>
                   <div className="holding-value">{formatCurrency(h.current_value)}</div>
@@ -191,18 +226,24 @@ export default function Finances() {
         <div style={{ flex: '2.5 1 0%', minWidth: 220 }}>
           <div className="section-header" style={{ marginBottom: 0 }}>
             <div className="eyebrow-title" style={{ marginBottom: 0 }}>Bills · {monthName()}</div>
-            <span className="muted" style={{ fontSize: 13 }}>{paidCount}/{bills.length} paid</span>
+            <span className="bills-meta">{paidCount}/{bills.length} paid</span>
           </div>
           {bills.length === 0 && <div className="empty-state">No bills tracked yet.</div>}
           <div className="bills-list">
             {bills.map((bill) => (
               <div className="bill-row" key={bill.id}>
-                <input
-                  type="checkbox"
-                  checked={!!bill.paid_this_month}
-                  onChange={() => toggleBillPaid(bill)}
-                />
+                <div
+                  className={`bill-checkbox ${bill.paid_this_month ? 'done' : ''}`}
+                  role="checkbox"
+                  aria-checked={!!bill.paid_this_month}
+                  onClick={() => toggleBillPaid(bill)}
+                >
+                  {bill.paid_this_month ? '✓' : ''}
+                </div>
                 <span className={`bill-name ${bill.paid_this_month ? 'paid' : ''}`}>{bill.name}</span>
+                {bill.amount != null && (
+                  <span className="bill-amount">{formatCurrency(bill.amount)}</span>
+                )}
               </div>
             ))}
           </div>

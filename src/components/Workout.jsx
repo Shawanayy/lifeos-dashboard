@@ -58,11 +58,11 @@ export default function Workout() {
     <div>
       <div className="section-header">
         <h2 className="section-title">Workout · {monthName(now)}</h2>
-        <span className="section-meta" style={{ fontStyle: 'normal', fontFamily: 'Archivo' }}>
+        <span className="section-meta section-meta-positive">
           {trainedDates.size} days
         </span>
       </div>
-      <div className="section-sub">Tap a day you trained · warns before changing past days.</div>
+      <div className="section-sub">Tap a day you trained · resets each month</div>
 
       {loading && <div className="empty-state">Loading…</div>}
 

@@ -92,7 +92,7 @@ export default function TodoList() {
           <span className="todo-done-caret">{showDone ? ' ▾' : ' ▸'}</span>
         </span>
       </div>
-      <div className="section-sub">Colour = priority · tag = category</div>
+      <div className="section-sub">Colour = priority · tag = mission</div>
 
       <form className="todo-add-row" onSubmit={addTodo}>
         <input
@@ -141,8 +141,20 @@ export default function TodoList() {
               title={`Priority: ${todo.priority || 'Medium'} (click to change)`}
               onClick={() => cyclePriority(todo)}
             />
-            <input type="checkbox" checked={!!todo.completed} onChange={() => toggleCompleted(todo)} />
-            <span className={`todo-title ${todo.completed ? 'done' : ''}`}>{todo.title}</span>
+            <div
+              className={`todo-checkbox ${todo.completed ? 'done' : ''}`}
+              role="checkbox"
+              aria-checked={!!todo.completed}
+              onClick={() => toggleCompleted(todo)}
+            >
+              {todo.completed ? '✓' : ''}
+            </div>
+            <div className="todo-title-wrap">
+              <span className={`todo-title ${todo.completed ? 'done' : ''}`}>{todo.title}</span>
+              {todo.due_date && (
+                <div className="todo-meta">Due {todo.due_date}</div>
+              )}
+            </div>
             <select
               className="todo-cat-pill"
               value={todo.category || CATEGORY_OPTIONS[0]}
@@ -154,7 +166,7 @@ export default function TodoList() {
                 textTransform: 'uppercase',
                 fontWeight: 600,
                 borderRadius: 20,
-                padding: '4px 14px',
+                padding: '4px 10px',
                 textAlign: 'center',
                 textAlignLast: 'center',
                 color: (CATEGORY_COLORS[todo.category] || {}).c || '#c9b8bb',

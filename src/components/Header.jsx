@@ -60,7 +60,7 @@ export default function Header() {
   const abbrev = zoneAbbrev(resolvedZone)
 
   return (
-    <div>
+    <div className="header-block">
       <div className="header-top">
         <div>
           <div className="eyebrow">{formatEyebrowDate()}</div>

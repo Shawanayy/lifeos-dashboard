@@ -28,7 +28,7 @@ export default function Sleep({ bare }) {
     <div className={bare ? '' : 'card'}>
       <div className="section-header" style={bare ? { marginBottom: 8 } : undefined}>
         {bare ? (
-          <div className="eyebrow-title" style={{ margin: 0 }}>Sleep &amp; Recovery</div>
+          <div style={{ fontFamily: "'Newsreader', serif", fontSize: 15, fontWeight: 600, color: '#ece4d8', margin: 0 }}>Sleep &amp; Recovery</div>
         ) : (
           <h2 className="section-title">Sleep &amp; Recovery</h2>
         )}
